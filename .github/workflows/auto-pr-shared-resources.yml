@@ -19,7 +19,6 @@ jobs:
         with:
           ref: sync-auto  #not exactly neccesarysary but whatever, just to be bloody safe
 
-      # Install GitHub CLI (gh)
       - name: Install GitHub CLI
         uses: cli/gh-action@v2
 
