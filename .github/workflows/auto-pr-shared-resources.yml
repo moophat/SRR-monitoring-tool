@@ -13,17 +13,17 @@ jobs:
   open-pr:
     runs-on: ubuntu-latest
     steps:
-      # ✅ Checkout the correct source branch
+      # Checkout the correct source branch
       - name: Checkout sync-auto branch
         uses: actions/checkout@v4
         with:
           ref: sync-auto  #not exactly neccesarysary but whatever, just to be bloody safe
 
-      # ✅ Install GitHub CLI (gh)
+      # Install GitHub CLI (gh)
       - name: Install GitHub CLI
         uses: cli/gh-action@v2
 
-      # ✅ Create the pull request using gh, without modifying anything
+      # Create the pull request using gh, without modifying anything
       - name: Create Pull Request from sync-auto to main
         run: |
           gh pr create \
