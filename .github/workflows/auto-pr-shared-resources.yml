@@ -20,7 +20,7 @@ jobs:
           ref: sync-auto  #not exactly neccesarysary but whatever, just to be bloody safe
 
       - name: Install GitHub CLI
-        uses: cli/gh-action@v2
+        run: sudo apt install -y gh
 
       # Create the pull request using gh, without modifying anything
       - name: Create Pull Request from sync-auto to main
