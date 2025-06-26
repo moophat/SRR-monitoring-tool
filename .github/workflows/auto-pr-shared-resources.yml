@@ -3,7 +3,7 @@ name: Auto PR from sync-auto to main
 on:
   push:
     branches:
-      - sync-auto  # Trigger only when sync-auto is updated
+      - sync-auto
 
 permissions:
   contents: write
@@ -13,25 +13,25 @@ jobs:
   open-pr:
     runs-on: ubuntu-latest
     steps:
-      # Optional: Checkout the sync-auto branch.
-      # #not exactly neccesarysary but whatever, just to be bloody safe
-      # but safe to include for clarity and future-proofing.
+      # ✅ Checkout the correct source branch
       - name: Checkout sync-auto branch
         uses: actions/checkout@v4
         with:
-          ref: sync-auto  # Optional — ensures we're on the correct branch
+          ref: sync-auto  #not exactly neccesarysary but whatever, just to be bloody safe
 
-      # Create a pull request without committing or modifying the branch
-      # This avoids rewriting or interfering with injected subtree content
+      # ✅ Install GitHub CLI (gh)
+      - name: Install GitHub CLI
+        uses: cli/gh-action@v2
+
+      # ✅ Create the pull request using gh, without modifying anything
       - name: Create Pull Request from sync-auto to main
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: sync-auto
-          title: "[auto-sync] Update from shared-resources"
-          body: |
-            Automated sync update from `SRR-shared-resources` via subtree.
-            Please review and merge.
-          labels: auto-sync
-          commit: false  #  Prevent bot from fucking rewriting or committing anything on our push
+        run: |
+          gh pr create \
+            --title "[auto-sync] Update from shared-resources" \
+            --body "Automated sync update from \`SRR-shared-resources\` via subtree. Please review and merge." \
+            --base main \
+            --head sync-auto \
+            --label auto-sync \
+            --repo ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
