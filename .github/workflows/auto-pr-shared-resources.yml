@@ -30,7 +30,6 @@ jobs:
             --body "Automated sync update from \`SRR-shared-resources\` via subtree. Please review and merge." \
             --base main \
             --head sync-auto \
-            --label auto-sync \
             --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
