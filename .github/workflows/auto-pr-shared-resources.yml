@@ -1,0 +1,29 @@
+name: Auto PR from sync-auto to main
+
+on:
+  push:
+    branches:
+      - sync-auto
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request from sync-auto to main
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: sync-auto
+          title: "[auto-sync] Update from shared-resources"
+          body: |
+            Automated sync update from `SRR-shared-resources` via subtree.
+            Please review and merge.
+          labels: auto-sync
