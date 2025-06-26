@@ -1,31 +1,25 @@
-name: Auto PR from sync-auto to main
+name: Trigger Upstream Sync to Shared-Resources
 
 on:
   push:
-    branches:
-      - sync-auto
-
-permissions:
-  contents: write
-  pull-requests: write
+    branches: [main]
+    paths:
+      - 'resource/**'
 
 jobs:
-  open-pr:
+  trigger-dispatch:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[auto-sync]')"
     steps:
-      - name: Create Pull Request via REST API
+      - name: Dispatch reverse sync to shared-resources
         run: |
           curl -X POST \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Authorization: token ${{ secrets.SHARED_REPO_PAT }}" \
             -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/pulls \
-            -d @- <<EOF
-          {
-            "title": "[auto-sync] Update from shared-resources",
-            "head": "sync-auto",
-            "base": "main",
-            "body": "Automated sync update from \`SRR-shared-resources\`. Please review and merge."
-          }
-          EOF
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            https://api.github.com/repos/moophat/SRR-shared-resources/dispatches \
+            -d '{
+              "event_type": "push-upstream",
+              "client_payload": {
+                "consumer": "monitoring-tool"
+              }
+            }'
